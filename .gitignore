@@ -1,0 +1,25 @@
+# binaries and libs
+*.so
+*.dylib
+*.dll
+*.a
+*.exe
+
+# qt creator project files
+*.pro
+*.user
+
+# directories
+*build*
+*CMakeFiles
+*Testing
+dist
+*.egg-info
+
+# misc
+*.DS_Store
+*CMakeCache.txt
+.ycm_extra_conf.py
+
+# test files
+*tests
