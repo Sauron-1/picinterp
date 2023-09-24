@@ -36,7 +36,7 @@ target_link_libraries(picinterp INTERFACE tuple_arithmetic)
 if (INSTALL_CPP)
     install(TARGETS picinterp EXPORT picinterpConfig)
     install(EXPORT picinterpConfig DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/picinterp)
-    install(DIRECTORY include DESTINATION include/picinterp)
+    install(DIRECTORY include/ DESTINATION include/picinterp)
     export(TARGETS picinterp FILE picinterpConfig.cmake)
 endif()
 
