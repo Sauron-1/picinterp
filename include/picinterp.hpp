@@ -150,6 +150,9 @@ template<typename T, typename Int, size_t N> constexpr static inline bool invoca
 
 } // namespace internal
 
+/**
+ * \deprecated
+ */
 template<size_t N, size_t D, size_t O, typename Float=double, typename Int=int64_t>
 class Interpolator {
     public:
@@ -199,9 +202,21 @@ class Interpolator {
 };
 
 
+/**
+ * Interpolator with vectorized gather/scatter. Automatically SIMD-vectorized.
+ * @tparam N Number of points to interpolate.
+ * @tparam D Dimension of the space.
+ * @tparam O Order of the interpolator.
+ * @tparam Float Floating point type.
+ * @tparam Int Integer type.
+ */
 template<size_t N, size_t D, size_t O, typename Float=double, typename Int=int64_t>
 class InterpolatorV {
     public:
+        /**
+         * Initialize interpolate at `pos`.
+         * @param pos Position to interpolate at. Must be a tuple-like object with tuple size `D`, each element must be a tuple-like object or xsimd::batch of size `N`.
+         */
         template<tpa::tuple_like Pos>
         InterpolatorV(Pos&& pos) {
             InterpWeightIndex<N, D, O, Float, Int> wi(std::forward<Pos>(pos));
@@ -217,6 +232,11 @@ class InterpolatorV {
             }
         }
 
+        /**
+         * Gather values from `src` at the positions specified in the constructor.
+         * @param src Source function. Must be callable with `D` integer coordinates and return a scalar with type `Float`.
+         * @return Array of gathered values, type is `std::array<Float, N>`.
+         */
         template<typename T>
             requires( internal::invocable_by_ints_v<T, Int, D> )
         auto gather(const T& src) {
@@ -235,6 +255,11 @@ class InterpolatorV {
             return result;
         }
 
+        /**
+         * Scatter values from `val` to the positions specified in the constructor.
+         * @param target Target function. Must be callable with `D` integer coordinates and return an lvalue reference to a scalar with type `Float`.
+         * @param val Values to scatter. Must be a tuple-like or xsimd::batch object with tuple size `N`, each element must be a scalar with type `Float`.
+         */
         template<typename T, typename S>
             requires( internal::invocable_by_ints_v<T, Int, D> )
         auto scatter(T& target, const S& val) {
