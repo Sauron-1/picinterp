@@ -252,7 +252,7 @@ class InterpolatorV {
                 internal::store(result,
                         internal::to_simd(result) + internal::to_simd(weights[i]) * tmp1);
             }
-            return result;
+            return internal::to_simd(result);
         }
 
         /**
