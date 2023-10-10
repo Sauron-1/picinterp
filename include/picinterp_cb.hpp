@@ -218,7 +218,7 @@ class InterpolatorV {
             constexpr size_t npt = cart_prod.size();
             alignas(sizeof(Float)*N) std::array<S, npt> vals;
             for (size_t i = 0; i < cart_prod.size(); ++i) {
-                internal::store(vals[i], internal::to_simd(val) * internal::to_simd(weights[i]));
+                internal::store(vals[i], internal::to_simdu(val) * internal::to_simd(weights[i]));
             }
             for (size_t n = 0; n < N; ++n) {
                 if (mask[n])
