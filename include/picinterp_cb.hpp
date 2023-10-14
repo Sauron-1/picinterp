@@ -7,7 +7,7 @@
 #include <utility>
 #include <xsimd/xsimd.hpp>
 
-#include "utils.hpp"
+#include "picinterp_utils.hpp"
 
 #pragma once
 
@@ -170,15 +170,42 @@ template<typename T, typename Int, size_t...I> struct invocable_by_ints_impl<T, 
 template<typename T, typename Int, size_t N> struct invocable_by_ints : invocable_by_ints_impl<T, Int, std::make_index_sequence<N>> {};
 template<typename T, typename Int, size_t N> constexpr static inline bool invocable_by_ints_v = invocable_by_ints<T, Int, N>::value;
 
+template<typename T>
+FORCE_INLINE auto bdcast_one(T&& v) {
+    if constexpr (tpa::tuple_like<T>)
+        return v;
+    else {
+        using val_t = std::remove_cvref_t<T>;
+        return std::array<val_t, 1>{v};
+    }
+}
+
+template<tpa::tuple_like T, size_t...I>
+FORCE_INLINE auto bdcast_impl(T&& v, std::index_sequence<I...>) {
+    return std::make_tuple(bdcast_one(std::get<I>(v))...);
+}
+
+template<tpa::tuple_like T>
+FORCE_INLINE auto bdcast(T&& v) {
+    return bdcast_impl(std::forward<T>(v), std::make_index_sequence<std::tuple_size_v<std::remove_cvref_t<T>>>{});
+}
+
 } // namespace internal
 
 
-template<size_t N, size_t D, size_t O, typename Float=double, typename Int=int64_t>
+template<size_t _N, size_t D, size_t O, typename Float=double, typename Int=int64_t>
 class InterpolatorV {
     public:
         template<tpa::tuple_like Pos, tpa::tuple_like UpperLim>
         InterpolatorV(Pos&& pos, UpperLim&& lim) {
-            InterpWeightIndex<N, D, O, Float, Int> wi(std::forward<Pos>(pos), std::forward<UpperLim>(lim));
+            //InterpWeightIndex<N, D, O, Float, Int> wi(std::forward<Pos>(pos), std::forward<UpperLim>(lim));
+            InterpWeightIndex<N, D, O, Float, Int> wi;
+            if constexpr (single_elem) {
+                auto pos1 = internal::bdcast(std::forward<Pos>(pos));
+                wi.init(internal::bdcast(std::forward<Pos>(pos)), std::forward<UpperLim>(lim));
+            }
+            else
+                wi.init(std::forward<Pos>(pos), std::forward<UpperLim>(lim));
             tpa::assign(weights, 1);
             for (size_t i = 0; i < cart_prod.size(); ++i) {
                 for (size_t j = 0; j < D; ++j) {
@@ -195,7 +222,6 @@ class InterpolatorV {
         template<typename T>
             requires( internal::invocable_by_ints_v<T, Int, D> )
         auto gather(const T& src) {
-            using Scalar = std::remove_cvref_t<decltype(std::apply(src, std::array<int, D>{}))>;
             constexpr size_t npt = cart_prod.size();
             alignas(sizeof(Float)*N) std::array<Float, N> result;
             tpa::assign(result, 0);
@@ -209,7 +235,10 @@ class InterpolatorV {
             }
             tpa::assign(result,
                     tpa::select(mask, result, std::nan("")));
-            return result;
+            if constexpr (single_elem)
+                return result[0];
+            else
+                return result;
         }
 
         template<typename T, typename S>
@@ -218,7 +247,10 @@ class InterpolatorV {
             constexpr size_t npt = cart_prod.size();
             alignas(sizeof(Float)*N) std::array<S, npt> vals;
             for (size_t i = 0; i < cart_prod.size(); ++i) {
-                internal::store(vals[i], internal::to_simdu(val) * internal::to_simd(weights[i]));
+                if constexpr (single_elem)
+                    internal::store(vals[i], val * internal::to_simd(weights[i]));
+                else
+                    internal::store(vals[i], internal::to_simdu(val) * internal::to_simd(weights[i]));
             }
             for (size_t n = 0; n < N; ++n) {
                 if (mask[n])
@@ -230,6 +262,8 @@ class InterpolatorV {
 
     private:
         static constexpr auto cart_prod = internal::cartesian_prod<D, O+1>;
+        static constexpr size_t N = _N == 0 ? 1 : _N;
+        static constexpr bool single_elem = _N == 0;
         alignas(sizeof(Float)*N) std::array<std::array<Float, N>, cart_prod.size()> weights;
         std::array<std::array<std::array<Int, D>, N>, cart_prod.size()> indices;
         std::array<bool, N> mask;

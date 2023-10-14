@@ -40,7 +40,8 @@ class CMakeBuild(build_ext):
             '-DPYTHON_EXECUTABLE=' + sys.executable
         ]
 
-        cfg = 'Debug' if self.debug else 'Release'
+        #cfg = 'Debug' if self.debug else 'Release'
+        cfg = 'Debug'
         build_args = ['--config', cfg]
 
         # Assuming Makefiles

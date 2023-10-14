@@ -26,7 +26,8 @@ target_include_directories(pypicinterp PRIVATE ${xsimd_INCLUDE_DIRS})
 message("-- Compiling for march=${MARCH}")
 
 target_include_directories(pypicinterp PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../include)
-target_compile_options(pypicinterp PRIVATE -O3 -march=${MARCH} -ffast-math -DNDEBUG)
+#target_compile_options(pypicinterp PRIVATE -O3 -march=${MARCH} -ffast-math -DNDEBUG)
+target_compile_options(pypicinterp PRIVATE -O3 -march=${MARCH} -ffast-math -DNDEBUG -g)
 
 find_package(OpenMP QUIET)
 if(OpenMP_CXX_FOUND)
