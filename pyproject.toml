@@ -1,8 +1,9 @@
 [build-system]
 requires = [
-    "setuptools>=42.0.0",
-    "cmake>=3.12",
-    "wheel"
+    "setuptools>=42",
+    "wheel",
+    "pybind11~=2.10.4",
+    "cmake>=3.12"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -12,7 +13,7 @@ version = "0.1"
 authors = [
     { name = "Junyi Ren", email = "jyren9871@gmail.com" },
 ]
-description = "A Python package for time series analysis"
+description = "Particle-in-cell shape function interpolate"
 classifiers = [
     "Programming Language :: C++",
     "License :: OSI Approved :: MIT License",

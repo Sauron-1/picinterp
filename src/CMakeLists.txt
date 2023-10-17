@@ -42,15 +42,6 @@ else()
     message("-- OpenMP not found. Performance maybe downgraded")
 endif()
 
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-
 set(OUTDIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set_target_properties(pypicinterp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUTDIR})
 set_target_properties(pypicinterp PROPERTIES OUTPUT_NAME picinterp)
-
-install(TARGETS pypicinterp
-    COMPONENT python
-    LIBRARY DESTINATION lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-)
