@@ -44,8 +44,9 @@ class CMakeBuild(build_ext):
         build_args = ['--config', cfg]
 
         # Assuming Makefiles
-        num_job = max(os.cpu_count()-1, 1)
-        build_args += ['--', f'-j{num_job}']
+        if not sys.platform.startswith('win'):
+            num_job = max(os.cpu_count()-1, 1)
+            build_args += ['--', f'-j{num_job}']
 
         self.build_args = build_args
 
