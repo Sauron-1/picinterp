@@ -10,7 +10,7 @@
 *.user
 
 # directories
-*build*
+*build*/
 *CMakeFiles
 *Testing
 dist

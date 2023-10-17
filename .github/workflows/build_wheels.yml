@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.buildplat[0] }} for ${{ matrix.python }}
+    runs-on: ${{ matrix.buildplat[0] }}
+    strategy:
+      matrix:
+        buildplat:
+          - [ubuntu-latest, manylinux_x86_64]
+          - [windows-latest, win_amd64]
+        python: [cp39, cp310, cp311]
+        archs:
+          - [core-avx2, avx2]
+
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            submodules: recursive
+
+        - name: Build wheels
+          uses: pypa/cibuildwheel@v2.13.1
+          env:
+            CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}-${{ matrix.archs[1] }}
+            MARCH: matrix.archs[0]
+
+        - name: Upload files to Artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: ${{ matrix.python }}-{{ matrix.buildplat[1] }}-${{ matrix.archs[1] }}
+            path: ./wheelhouse/*.whl
