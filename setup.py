@@ -37,9 +37,12 @@ class CMakeBuild(build_ext):
 
         cmake_args = [
             '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + build_directory,
-            '-DPYTHON_EXECUTABLE=' + sys.executable,
-            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_path('include'),
-            '-DPYTHON_LIBRARY=' + sysconfig.get_config_var('LIBDIR')
+            '-DPython_EXECUTABLE=' + sys.executable,
+            '-DPython_INCLUDE_DIR=' + sysconfig.get_path('include'),
+            '-DPython_LIBRARY=' + sysconfig.get_config_var('LIBDIR'),
+            '-DPython3_EXECUTABLE=' + sys.executable,
+            '-DPython3_INCLUDE_DIR=' + sysconfig.get_path('include'),
+            '-DPython3_LIBRARY=' + sysconfig.get_config_var('LIBDIR')
         ]
 
         cfg = 'Debug' if self.debug else 'Release'
