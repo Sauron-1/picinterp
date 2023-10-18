@@ -124,7 +124,7 @@ auto interp_put_py_impl(
 #if defined(_OPENMP)
 #   pragma omp for schedule(guided)
 #endif
-        for (size_t i = 0; i < num_aligned; ++i) {
+        for (auto i = 0; i < num_aligned; ++i) {
             std::array<std::array<Float, N>, D> data;
             for (auto n = 0; n < N; ++n)
                 ig.get(i*N+n, idx[n]);
