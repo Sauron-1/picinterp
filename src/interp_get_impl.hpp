@@ -58,7 +58,7 @@ auto interp_get_py_impl(const std::vector<py::array_t<Float>>& srcs, const std::
 #if defined(_OPENMP)
 #   pragma omp for schedule(guided)
 #endif
-        for (size_t i = 0; i < num_aligned; ++i) {
+        for (auto i = 0; i < num_aligned; ++i) {
             for (auto n = 0; n < N; ++n)
                 ig.get(i*N+n, idx[n]);
             for (auto d = 0; d < D; ++d)

@@ -27,7 +27,7 @@ message("-- Compiling for march=${MARCH}")
 
 target_include_directories(pypicinterp PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../include)
 
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(pypicinterp PRIVATE /O2 /fp:fast /DNDEBUG)
 else()
     target_compile_options(pypicinterp PRIVATE -O3 -march=${MARCH} -ffast-math -DNDEBUG)
