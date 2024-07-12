@@ -79,17 +79,21 @@ class CMakeBuild(build_ext):
 
     def move_output(self, ext):
         build_temp = Path(self.build_temp).resolve()
-        if sys.platform.startswith('win'):
-            # On windows, the output dir might be build_tmp/{Debug,Release}.
-            # Check if build_tmp/{Debug,Release} exists.
-            if (build_temp / self.cfg).exists():
-                # set build_temp to build_tmp/{Debug,Release}
-                build_temp = build_temp / self.cfg
-        dest_path = Path(self.get_ext_fullpath(ext.name)).resolve()
-        source_path = build_temp / self.get_ext_filename(ext.name)
-        dest_directory = dest_path.parents[0]
-        dest_directory.mkdir(parents=True, exist_ok=True)
-        self.copy_file(source_path, dest_path)
+        if sys.platform == 'win32':
+            so_dir = build_temp / 'Release'
+        else:
+            so_dir = build_temp / self.extensions[0].name
+        # get current library path of ext
+        build_lib = Path(self.get_ext_fullpath(ext.name)).resolve().parent
+        # recursively copy all files in so_dir to build_lib/self.extensions[0].name, keeping directory structure
+        for path in so_dir.rglob('*'):
+            if path.is_file():
+                dest_path = build_lib / path.relative_to(build_temp)
+                dest_dir = dest_path.parent
+                if dest_dir.name == 'Release':
+                    dest_dir = dest_dir.parent
+                dest_dir.mkdir(parents=True, exist_ok=True)
+                self.copy_file(path, dest_dir)
         
         
 ext_modules = [
