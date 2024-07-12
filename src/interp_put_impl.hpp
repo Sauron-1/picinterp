@@ -70,9 +70,9 @@ auto interp_put_py_impl(
     if (weights.size() != targets.size())
         throw std::invalid_argument("Number of values and targets mismatch");
     auto weight_shape = get_same_shape(weights);
-    if (weights.size() != coord_shape.size())
+    if (weight_shape.size() != coord_shape.size())
         throw std::invalid_argument("Values dim mismatch with coords dim");
-    for (auto i = 0; i < weights.size(); ++i)
+    for (auto i = 0; i < weight_shape.size(); ++i)
         if (weight_shape[i] != coord_shape[i])
             throw std::invalid_argument("Values shape mismatch with coords shape");
 

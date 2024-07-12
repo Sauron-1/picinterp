@@ -41,6 +41,7 @@ class CMakeBuild(build_ext):
         ]
 
         cfg = 'Debug' if self.debug else 'Release'
+        self.cfg = cfg
         build_args = ['--config', cfg]
 
         # Assuming Makefiles
@@ -78,6 +79,12 @@ class CMakeBuild(build_ext):
 
     def move_output(self, ext):
         build_temp = Path(self.build_temp).resolve()
+        if sys.platform.startswith('win'):
+            # On windows, the output dir might be build_tmp/{Debug,Release}.
+            # Check if build_tmp/{Debug,Release} exists.
+            if (build_temp / self.cfg).exists():
+                # set build_temp to build_tmp/{Debug,Release}
+                build_temp = build_temp / self.cfg
         dest_path = Path(self.get_ext_fullpath(ext.name)).resolve()
         source_path = build_temp / self.get_ext_filename(ext.name)
         dest_directory = dest_path.parents[0]
