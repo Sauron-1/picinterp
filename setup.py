@@ -82,12 +82,12 @@ class CMakeBuild(build_ext):
         if sys.platform == 'win32':
             so_dir = build_temp / 'Release'
         else:
-            so_dir = build_temp / self.extensions[0].name
+            so_dir = build_temp
         # get current library path of ext
         build_lib = Path(self.get_ext_fullpath(ext.name)).resolve().parent
         # recursively copy all files in so_dir to build_lib/self.extensions[0].name, keeping directory structure
         for path in so_dir.rglob('*'):
-            if path.is_file():
+            if path.is_file() and path.name.endswith('.so'):
                 dest_path = build_lib / path.relative_to(build_temp)
                 dest_dir = dest_path.parent
                 if dest_dir.name == 'Release':
