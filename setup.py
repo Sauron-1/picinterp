@@ -86,12 +86,12 @@ class CMakeBuild(build_ext):
             with open(str(build_lib/'__init__.py'), 'w') as f:
                 f.write(f"from {ext.name} import *")
         else:
-            so_dir = build_temp / self.extensions[0].name
+            so_dir = build_temp
             build_lib = Path(self.get_ext_fullpath(ext.name)).resolve().parent
         # get current library path of ext
         # recursively copy all files in so_dir to build_lib/self.extensions[0].name, keeping directory structure
         for path in so_dir.rglob('*'):
-            if path.is_file():
+            if path.is_file() and path.name.endswith('.so'):
                 dest_path = build_lib / path.relative_to(build_temp)
                 dest_dir = dest_path.parent
                 if dest_dir.name == 'Release':
