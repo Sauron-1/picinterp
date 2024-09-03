@@ -86,6 +86,8 @@ class CMakeBuild(build_ext):
         build_lib = Path(self.get_ext_fullpath(ext.name)).resolve().parent
         for path in so_dir.rglob('*'):
             if path.is_file():
+                if sys.platform != 'win32' and not path.name.endswith('.so'):
+                    continue
                 dest_path = build_lib / path.relative_to(build_temp)
                 dest_dir = dest_path.parent
                 if dest_dir.name == 'Release':
