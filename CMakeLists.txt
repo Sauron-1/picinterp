@@ -24,7 +24,7 @@ if(NOT tuple_arithmetic_FOUND)
     FetchContent_Declare(
         tuple_arithmetic
         GIT_REPOSITORY https://github.com/Sauron-1/tuple_arithmetic.git
-        GIT_TAG        05be75e86ae7dc396217faa05d29f9af4c172a6f
+        GIT_TAG        547ebd0b978d6542431363c4f5460b58cc708ef6
     )
     set(BULID_TESTS_TMP ${BUILD_TESTS})
     set(BUILD_TESTS OFF)

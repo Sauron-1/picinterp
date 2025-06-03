@@ -10,8 +10,8 @@ if (NOT pybind11_FOUND)
     include(FetchContent)
     FetchContent_Declare(
         pybind11
-        URL    https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.zip
-        URL_HASH MD5=c62d9e05243bd31cdb3bae1bb2f56655
+        URL    https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.zip
+        URL_HASH MD5=671deeeaccfccd7c0389e43237c71cf3
         TLS_VERIFY true
     )
     FetchContent_MakeAvailable(pybind11)
