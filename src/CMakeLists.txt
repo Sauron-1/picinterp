@@ -4,18 +4,7 @@ project(pypicinterp)
 set(CMAKE_CXX_STANDARD 20) 
 set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 
-find_package(pybind11 QUIET)
-if (NOT pybind11_FOUND)
-    message("-- pybind11 not found. Downloading...")
-    include(FetchContent)
-    FetchContent_Declare(
-        pybind11
-        URL    https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.zip
-        URL_HASH MD5=671deeeaccfccd7c0389e43237c71cf3
-        TLS_VERIFY true
-    )
-    FetchContent_MakeAvailable(pybind11)
-endif()
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../thirdparty/pybind11 build)
 file(GLOB IMPL_SRC ${CMAKE_CURRENT_LIST_DIR}/impls/*.cpp)
 file(GLOB SRC ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
 pybind11_add_module(pypicinterp ${SRC} ${IMPL_SRC})

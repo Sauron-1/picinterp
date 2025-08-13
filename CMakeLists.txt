@@ -16,20 +16,12 @@ target_include_directories(
     $<INSTALL_INTERFACE:include/picinterp>
 )
 
-# require tuple_arithmetic library. Download from github if not found.
 find_package(tuple_arithmetic QUIET)
-if(NOT tuple_arithmetic_FOUND)
-    message(STATUS "tuple_arithmetic not found. Downloading from github...")
-    include(FetchContent)
-    FetchContent_Declare(
-        tuple_arithmetic
-        GIT_REPOSITORY https://github.com/Sauron-1/tuple_arithmetic.git
-        GIT_TAG        547ebd0b978d6542431363c4f5460b58cc708ef6
-    )
-    set(BULID_TESTS_TMP ${BUILD_TESTS})
-    set(BUILD_TESTS OFF)
-    FetchContent_MakeAvailable(tuple_arithmetic)
-    set(BUILD_TESTS ${BULID_TESTS_TMP})
+if (NOT tuple_arithmetic_FOUND)
+    message("tuple_arithmetic not found. Using built-in")
+    add_subdirectory(thirdparty/tuple_arithmetic)
+else()
+    message("tuple_arithmetic found.")
 endif()
 target_link_libraries(picinterp INTERFACE tuple_arithmetic)
 
