@@ -1,0 +1,6 @@
+[submodule "thirdparty/tuple_arithmetic"]
+	path = thirdparty/tuple_arithmetic
+	url = https://github.com/Sauron-1/tuple_arithmetic.git
+[submodule "thirdparty/pybind11"]
+	path = thirdparty/pybind11
+	url = https://github.com/pybind/pybind11.git
