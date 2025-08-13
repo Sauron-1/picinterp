@@ -16,12 +16,8 @@ target_include_directories(
     $<INSTALL_INTERFACE:include/picinterp>
 )
 
-find_package(tuple_arithmetic QUIET)
-if (NOT tuple_arithmetic_FOUND)
-    message("tuple_arithmetic not found. Using built-in")
+if(NOT TARGET tuple_arithmetic)
     add_subdirectory(thirdparty/tuple_arithmetic)
-else()
-    message("tuple_arithmetic found.")
 endif()
 target_link_libraries(picinterp INTERFACE tuple_arithmetic)
 
